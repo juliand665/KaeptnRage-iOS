@@ -16,12 +16,13 @@ class ViewController: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		// Do any additional setup after loading the view, typically from a nib.
+		
+		load()
 	}
 
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
-		// Dispose of any resources that can be recreated.
+		
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -39,9 +40,27 @@ class ViewController: UITableViewController {
 	@IBAction func refresh(_ refresher: UIRefreshControl) {
 		updater.requestNewSnippets { (new) in
 			self.snippets = new ?? []
+			self.save()
 			self.tableView.reloadData()
-			refresher.endRefreshing() // TODO does this need to be done on the main queue?
+			refresher.endRefreshing()
 			print("Refresh ended!", new)
 		}
+	}
+	
+	/// loads data from defaults using NSKeyedUnarchiver
+	func load() {
+		if let data = UserDefaults.standard.data(forKey: "snippets") {
+			NSKeyedUnarchiver.setClass(Snippet.self, forClassName: "Snippet")
+			if let obj = NSKeyedUnarchiver.unarchiveObject(with: data) {
+				snippets = obj as! [Snippet]
+			}
+		}
+	}
+	
+	/// saves data to defaults using NSKeyedArchiver
+	func save() {
+		NSKeyedArchiver.setClassName("Snippet", for: Snippet.self)
+		let data = NSKeyedArchiver.archivedData(withRootObject: snippets)
+		UserDefaults.standard.set(data, forKey: "snippets")
 	}
 }
