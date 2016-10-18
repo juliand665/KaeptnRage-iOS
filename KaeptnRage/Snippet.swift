@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 import Mantle
 
 typealias JSONObject = [String: Any]
@@ -15,6 +16,14 @@ class Snippet: MTLModel, MTLJSONSerializing {
 	
 	var fileName: String!
 	var lastChange: Date!
+	var soundPlayer: AVAudioPlayer?
+	var soundData: Data? {
+		didSet {
+			if let data = soundData {
+				soundPlayer = try? AVAudioPlayer(data: data)
+			}
+		}
+	}
 	
 	var name: String {
 		get {
@@ -22,31 +31,37 @@ class Snippet: MTLModel, MTLJSONSerializing {
 		}
 	}
 	
-	static let dateFormatter = { () -> DateFormatter in 
-		let formatter = DateFormatter()
-		formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-		return formatter
-	}()
-	
-	static func jsonKeyPathsByPropertyKey() -> [AnyHashable : Any]! {
+	static func jsonKeyPathsByPropertyKey() -> [AnyHashable: Any]! {
 		return [
 			"fileName": "FileName",
-			"lastChange": "ChangeDate"
+			"lastChange": "ChangeDate",
+			"soundData": "soundData"
 		]
 	}
 	
 	static func jsonTransformer(forKey key: String!) -> ValueTransformer! {
 		if key == "lastChange" {
-			return MTLValueTransformer(usingReversibleBlock: { (from, success, error) -> Any? in
+			let formatter = DateFormatter()
+			formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+			
+			return MTLValueTransformer(usingReversibleBlock: { (from, success, error) in
 				if let date = from as? Date {
-					return dateFormatter.string(from: date)
+					return formatter.string(from: date)
 				}
 				if let string = from as? String {
-					return dateFormatter.date(from: string)
+					return formatter.date(from: string)
 				}
 				return nil
 			})
 		}
 		return nil
+	}
+}
+
+extension Snippet { // CustomStringConvertible
+	
+	override func description() -> String! {
+		let dataMessage = soundData == nil ? "some" : "no"
+		return "Snippet named \(fileName) with \(dataMessage) sound data; last changed on \(lastChange.description)"
 	}
 }

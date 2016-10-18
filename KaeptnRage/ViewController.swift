@@ -7,10 +7,11 @@
 //
 
 import UIKit
-import Mantle
+import AVFoundation
+//import Mantle
 
 class ViewController: UITableViewController {
-
+	
 	var snippets: [Snippet] = []
 	let updater = Updater()
 	
@@ -19,7 +20,7 @@ class ViewController: UITableViewController {
 		
 		load()
 	}
-
+	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		
@@ -37,20 +38,52 @@ class ViewController: UITableViewController {
 		return cell
 	}
 	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		defer {
+			tableView.deselectRow(at: indexPath, animated: true)
+		}
+		
+		let snippet = snippets[indexPath.row]
+		
+		snippet.soundPlayer?.currentTime = 0 // for DJing
+		snippet.soundPlayer?.play()
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return snippets.isEmpty ? "Pull down to Download" : "Downloaded Snippets"
+	}
+	
 	@IBAction func refresh(_ refresher: UIRefreshControl) {
 		updater.requestNewSnippets { (new) in
 			self.snippets = new ?? []
-			self.save()
 			self.tableView.reloadData()
-			refresher.endRefreshing()
-			print("Refresh ended!", new)
+			self.requestSoundData() {
+				self.save()
+				self.tableView.reloadData()
+				refresher.endRefreshing()
+			}
+		}
+	}
+	
+	func requestSoundData(completion: @escaping () -> Void) {
+		let group = DispatchGroup()
+		for snippet in snippets {
+			print("requesting", snippet)
+			group.enter()
+			updater.requestSound(for: snippet) {
+				print("got", snippet)
+				group.leave()
+			}
+		}
+		group.notify(queue: .main) { 
+			completion()
 		}
 	}
 	
 	/// loads data from defaults using NSKeyedUnarchiver
 	func load() {
 		if let data = UserDefaults.standard.data(forKey: "snippets") {
-			NSKeyedUnarchiver.setClass(Snippet.self, forClassName: "Snippet")
+			//NSKeyedUnarchiver.setClass(Snippet.self, forClassName: "Snippet")
 			if let obj = NSKeyedUnarchiver.unarchiveObject(with: data) {
 				snippets = obj as! [Snippet]
 			}
@@ -59,7 +92,7 @@ class ViewController: UITableViewController {
 	
 	/// saves data to defaults using NSKeyedArchiver
 	func save() {
-		NSKeyedArchiver.setClassName("Snippet", for: Snippet.self)
+		//NSKeyedArchiver.setClassName("Snippet", for: Snippet.self)
 		let data = NSKeyedArchiver.archivedData(withRootObject: snippets)
 		UserDefaults.standard.set(data, forKey: "snippets")
 	}

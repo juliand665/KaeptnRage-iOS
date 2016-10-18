@@ -352,6 +352,11 @@
 				DEVELOPMENT_TEAM = V2EPDFA9PV;
 				INFOPLIST_FILE = KaeptnRage/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Mantle\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.juliand665.KaeptnRage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -366,6 +371,11 @@
 				DEVELOPMENT_TEAM = V2EPDFA9PV;
 				INFOPLIST_FILE = KaeptnRage/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"Mantle\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.juliand665.KaeptnRage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;

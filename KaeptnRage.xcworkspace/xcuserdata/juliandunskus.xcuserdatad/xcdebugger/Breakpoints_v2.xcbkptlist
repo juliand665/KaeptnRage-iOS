@@ -2,4 +2,54 @@
 <Bucket
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/Mantle/Mantle/MTLJSONAdapter.m"
+            timestampString = "498518551.689296"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
+            landmarkName = "-JSONDictionaryFromModel:error:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[MTLJSONAdapter JSONDictionaryFromModel:error:]"
+                  moduleName = "Mantle"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/juliandunskus/Documents/XCode/KaeptnRage/Pods/Mantle/Mantle/MTLJSONAdapter.m"
+                  timestampString = "498523508.619056"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "195"
+                  endingLineNumber = "195"
+                  offsetFromSymbolStart = "1440">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__48-[MTLJSONAdapter JSONDictionaryFromModel:error:]_block_invoke"
+                  moduleName = "Mantle"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/juliandunskus/Documents/XCode/KaeptnRage/Pods/Mantle/Mantle/MTLJSONAdapter.m"
+                  timestampString = "498523508.620703"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "195"
+                  endingLineNumber = "195"
+                  offsetFromSymbolStart = "48">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

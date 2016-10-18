@@ -9,5 +9,6 @@ target 'KaeptnRage' do
 
   # Pods for KaeptnRage
   pod 'Mantle'
+  #pod 'Gloss' - no swift 3 yet T_T
 
 end
