@@ -8,14 +8,19 @@
 
 import Foundation
 import AVFoundation
-import Mantle
 
 typealias JSONObject = [String: Any]
 
-class Snippet: MTLModel, MTLJSONSerializing {
+class Snippet: NSObject, NSCoding {
 	
-	var fileName: String!
-	var lastChange: Date!
+	static let dateFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+		return formatter
+	}()
+	
+	var fileName: String
+	var lastChange: Date
 	var soundPlayer: AVAudioPlayer?
 	var soundData: Data? {
 		didSet {
@@ -24,43 +29,59 @@ class Snippet: MTLModel, MTLJSONSerializing {
 			}
 		}
 	}
-	
 	var name: String {
-		get {
-			return fileName.components(separatedBy: " - ").last!
+		return fileName.components(separatedBy: " - ").last ?? "unnamed"
+	}
+	var author: String {
+		return fileName.components(separatedBy: " - ").first ?? "unknown"
+	}
+	
+	init(named name: String, changed change: String, data: Data?) {
+		fileName = name
+		lastChange = Snippet.dateFormatter.date(from: change) ?? Date()
+		soundData = data
+	}
+	
+	init?(from json: JSONObject) {
+		if let name = json["FileName"] as? String,
+		   let change = json["ChangeDate"] as? String {
+			fileName = name
+			lastChange = Snippet.dateFormatter.date(from: change) ?? Date()
+			super.init()
+		} else {
+			return nil
 		}
 	}
 	
-	static func jsonKeyPathsByPropertyKey() -> [AnyHashable: Any]! {
-		return [
-			"fileName": "FileName",
-			"lastChange": "ChangeDate",
-			"soundData": "soundData"
-		]
+	required init?(coder: NSCoder) {
+		if let name = coder.decodeObject(forKey: "fileName") as? String,
+		   let change = coder.decodeObject(forKey: "lastChange") as? Date {
+			fileName = name
+			lastChange = change
+			super.init()
+			;{ soundData = coder.decodeObject(forKey: "soundData") as? Data }() // to call didSet
+		} else {
+			return nil
+		}
 	}
 	
-	static func jsonTransformer(forKey key: String!) -> ValueTransformer! {
-		if key == "lastChange" {
-			let formatter = DateFormatter()
-			formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-			
-			return MTLValueTransformer(usingReversibleBlock: { (from, success, error) in
-				if let date = from as? Date {
-					return formatter.string(from: date)
-				}
-				if let string = from as? String {
-					return formatter.date(from: string)
-				}
-				return nil
-			})
-		}
-		return nil
+	func encode(with coder: NSCoder) {
+		coder.encode(fileName, forKey: "fileName")
+		coder.encode(lastChange, forKey: "lastChange")
+		coder.encode(soundData, forKey: "soundData")
+	}
+}
+
+extension Snippet { // Equatable
+	
+	static func ==(lhs: Snippet, rhs: Snippet) -> Bool {
+		return lhs.name == rhs.name && lhs.lastChange == rhs.lastChange
 	}
 }
 
 extension Snippet { // CustomStringConvertible
 	
-	override func description() -> String! {
+	override var description: String {
 		let dataMessage = soundData == nil ? "some" : "no"
 		return "Snippet named \(fileName) with \(dataMessage) sound data; last changed on \(lastChange.description)"
 	}

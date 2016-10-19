@@ -8,7 +8,6 @@
 
 import UIKit
 import AVFoundation
-//import Mantle
 
 class ViewController: UITableViewController {
 	
@@ -23,7 +22,6 @@ class ViewController: UITableViewController {
 	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
-		
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -45,8 +43,12 @@ class ViewController: UITableViewController {
 		
 		let snippet = snippets[indexPath.row]
 		
-		snippet.soundPlayer?.currentTime = 0 // for DJing
-		snippet.soundPlayer?.play()
+		if let player = snippet.soundPlayer {
+			player.currentTime = 0 // for DJing
+			player.play()
+		} else {
+			print("Could not get sound player for", snippet)
+		}
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -55,17 +57,33 @@ class ViewController: UITableViewController {
 	
 	@IBAction func refresh(_ refresher: UIRefreshControl) {
 		updater.requestNewSnippets { (new) in
-			self.snippets = new ?? []
-			self.tableView.reloadData()
-			self.requestSoundData() {
-				self.save()
+			if let new = new {
+				let group = DispatchGroup()
+				
+				for snippet in new {
+					if let prev = self.snippets.first(where: { $0 == snippet })?.soundData {
+						snippet.soundData = prev
+					} else {
+						group.enter()
+						self.updater.requestSound(for: snippet) { 
+							group.leave()
+						}
+					}
+				}
+				
+				self.snippets = new
 				self.tableView.reloadData()
-				refresher.endRefreshing()
+				
+				group.notify(queue: .main) {
+					self.save()
+					self.tableView.reloadData()
+					refresher.endRefreshing()
+				}
 			}
 		}
 	}
 	
-	func requestSoundData(completion: @escaping () -> Void) {
+	func requestSoundData(for snippets: [Snippet], completion: @escaping () -> Void) {
 		let group = DispatchGroup()
 		for snippet in snippets {
 			print("requesting", snippet)
@@ -83,7 +101,7 @@ class ViewController: UITableViewController {
 	/// loads data from defaults using NSKeyedUnarchiver
 	func load() {
 		if let data = UserDefaults.standard.data(forKey: "snippets") {
-			//NSKeyedUnarchiver.setClass(Snippet.self, forClassName: "Snippet")
+			NSKeyedUnarchiver.setClass(Snippet.self, forClassName: "Snippet")
 			if let obj = NSKeyedUnarchiver.unarchiveObject(with: data) {
 				snippets = obj as! [Snippet]
 			}
@@ -92,7 +110,7 @@ class ViewController: UITableViewController {
 	
 	/// saves data to defaults using NSKeyedArchiver
 	func save() {
-		//NSKeyedArchiver.setClassName("Snippet", for: Snippet.self)
+		NSKeyedArchiver.setClassName("Snippet", for: Snippet.self)
 		let data = NSKeyedArchiver.archivedData(withRootObject: snippets)
 		UserDefaults.standard.set(data, forKey: "snippets")
 	}

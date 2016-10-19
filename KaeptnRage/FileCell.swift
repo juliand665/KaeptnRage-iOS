@@ -11,10 +11,12 @@ import UIKit
 class FileCell: UITableViewCell {
 	
 	@IBOutlet weak var nameLabel: UILabel!
+	@IBOutlet weak var authorLabel: UILabel!
 	
 	var snippet: Snippet! {
 		didSet {
 			nameLabel.text = snippet.name
+			authorLabel.text = snippet.author
 		}
 	}
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2016 Julian Dunskus. All rights reserved.
 //
 
-import Mantle
+import Foundation
 
 class Updater {
 	
@@ -19,16 +19,12 @@ class Updater {
 		
 		session.dataTask(with: url) { (data, response, error) in
 			if let data = data,
-				let json = try? JSONSerialization.jsonObject(with: data) as? JSONObject,
-				let array = json?["Files"] as? [JSONObject] { // nice
+			   let json = try? JSONSerialization.jsonObject(with: data) as? JSONObject,
+			   let array = json?["Files"] as? [JSONObject] { // nice
 				
-				do {
-					let snippets = try MTLJSONAdapter.models(of: Snippet.self, fromJSONArray: array).map { $0 as! Snippet }
-					completion(snippets)
-					return
-				} catch {
-					print(error)
-				}
+				let snippets = array.flatMap(Snippet.init)
+				completion(snippets)
+				return
 			}
 			print("something failed!")
 			print(data?.count)
