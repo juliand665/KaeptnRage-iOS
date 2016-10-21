@@ -83,21 +83,6 @@ class ViewController: UITableViewController {
 		}
 	}
 	
-	func requestSoundData(for snippets: [Snippet], completion: @escaping () -> Void) {
-		let group = DispatchGroup()
-		for snippet in snippets {
-			print("requesting", snippet)
-			group.enter()
-			updater.requestSound(for: snippet) {
-				print("got", snippet)
-				group.leave()
-			}
-		}
-		group.notify(queue: .main) { 
-			completion()
-		}
-	}
-	
 	/// loads data from defaults using NSKeyedUnarchiver
 	func load() {
 		if let data = UserDefaults.standard.data(forKey: "snippets") {

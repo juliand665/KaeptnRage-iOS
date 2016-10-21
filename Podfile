@@ -8,7 +8,7 @@ target 'KaeptnRage' do
   use_frameworks!
 
   # Pods for KaeptnRage
-  pod 'Mantle'
+  #pod 'Mantle'
   #pod 'Gloss' - no swift 3 yet T_T
 
 end
