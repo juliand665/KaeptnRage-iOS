@@ -82,7 +82,7 @@ extension Snippet { // Equatable
 extension Snippet { // CustomStringConvertible
 	
 	override var description: String {
-		let dataMessage = soundData == nil ? "some" : "no"
+		let dataMessage = soundData == nil ? "no" : "some"
 		return "Snippet named \(fileName) with \(dataMessage) sound data; last changed on \(lastChange.description)"
 	}
 }

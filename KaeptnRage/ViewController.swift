@@ -11,48 +11,45 @@ import AVFoundation
 
 class ViewController: UITableViewController {
 	
-	var snippets: [Snippet] = []
+	var snippets: [Snippet] = [] {
+		didSet {
+			snippetsByAuthor = []
+			var list: [Snippet] = []
+			for snippet in snippets {
+				if list.isEmpty || snippet.author == list.first!.author {
+					list.append(snippet)
+				} else {
+					snippetsByAuthor.append(list)
+					list = [snippet]
+				}
+			}
+			snippetsByAuthor.append(list)
+		}
+	}
+	
+	fileprivate var snippetsByAuthor: [[Snippet]]! {
+		didSet {
+			cells = snippetsByAuthor.map {
+				$0.map { snippet -> FileCell in
+					let cell = tableView.dequeueReusableCell(withIdentifier: "FileCell") as! FileCell
+					cell.snippet = snippet
+					return cell
+				}
+			}
+		}
+	}
+	
+	fileprivate var cells: [[FileCell]]!
 	let updater = Updater()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+		setNeedsStatusBarAppearanceUpdate()
 		load()
 	}
 	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
-	}
-	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return snippets.count
-	}
-	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "FileCell") as! FileCell
-		
-		cell.snippet = snippets[indexPath.row]
-		
-		return cell
-	}
-	
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		defer {
-			tableView.deselectRow(at: indexPath, animated: true)
-		}
-		
-		let snippet = snippets[indexPath.row]
-		
-		if let player = snippet.soundPlayer {
-			player.currentTime = 0 // for DJing
-			player.play()
-		} else {
-			print("Could not get sound player for", snippet)
-		}
-	}
-	
-	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return snippets.isEmpty ? "Pull down to Download" : "Downloaded Snippets"
 	}
 	
 	@IBAction func refresh(_ refresher: UIRefreshControl) {
@@ -83,6 +80,18 @@ class ViewController: UITableViewController {
 		}
 	}
 	
+	@IBAction func stopPressed(_ sender: UIBarButtonItem) {
+		for snippet in snippets {
+			snippet.soundPlayer?.stop()
+			snippet.soundPlayer?.currentTime = 0
+		}
+		for row in cells {
+			for cell in row {
+				cell.stop()
+			}
+		}
+	}
+	
 	/// loads data from defaults using NSKeyedUnarchiver
 	func load() {
 		if let data = UserDefaults.standard.data(forKey: "snippets") {
@@ -98,5 +107,34 @@ class ViewController: UITableViewController {
 		NSKeyedArchiver.setClassName("Snippet", for: Snippet.self)
 		let data = NSKeyedArchiver.archivedData(withRootObject: snippets)
 		UserDefaults.standard.set(data, forKey: "snippets")
+	}
+}
+
+// MARK: - Table View Delegate
+extension ViewController {
+	
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		return max(1, snippetsByAuthor.count)
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return snippetsByAuthor.isEmpty ? "Pull down to Download" : snippetsByAuthor[section].first?.author
+	}
+	
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return snippetsByAuthor.isEmpty ? 0 : snippetsByAuthor[section].count
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		
+		return cells[indexPath.section][indexPath.row]
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		defer {
+			tableView.deselectRow(at: indexPath, animated: false)
+		}
+		
+		cells[indexPath.section][indexPath.row].play()
 	}
 }
