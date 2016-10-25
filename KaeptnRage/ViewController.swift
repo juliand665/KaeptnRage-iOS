@@ -127,7 +127,7 @@ extension ViewController {
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		return cells[indexPath.section][indexPath.row]
+		return cells[indexPath]
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -135,6 +135,6 @@ extension ViewController {
 			tableView.deselectRow(at: indexPath, animated: false)
 		}
 		
-		cells[indexPath.section][indexPath.row].play()
+		cells[indexPath].play()
 	}
 }

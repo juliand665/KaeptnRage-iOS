@@ -15,6 +15,7 @@
 		954D73631DB616A400F6EC6C /* FileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954D73621DB616A400F6EC6C /* FileCell.swift */; };
 		954D73651DB61AD600F6EC6C /* Snippet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954D73641DB61AD600F6EC6C /* Snippet.swift */; };
 		954D73671DB6215D00F6EC6C /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954D73661DB6215D00F6EC6C /* Updater.swift */; };
+		95FB2E7C1DBE977B00E43F68 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FB2E7B1DBE977B00E43F68 /* Helpers.swift */; };
 		AED982F33F8A2A8CD895927F /* Pods_KaeptnRage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97470ACA1CB1DF85E9A584F2 /* Pods_KaeptnRage.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		954D73621DB616A400F6EC6C /* FileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCell.swift; sourceTree = "<group>"; };
 		954D73641DB61AD600F6EC6C /* Snippet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snippet.swift; sourceTree = "<group>"; };
 		954D73661DB6215D00F6EC6C /* Updater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
+		95FB2E7B1DBE977B00E43F68 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		97470ACA1CB1DF85E9A584F2 /* Pods_KaeptnRage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KaeptnRage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDFB9513EFF2DC3453157235 /* Pods-KaeptnRage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KaeptnRage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KaeptnRage/Pods-KaeptnRage.debug.xcconfig"; sourceTree = "<group>"; };
 		EFE8218B87C78DF78C2B1838 /* Pods-KaeptnRage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KaeptnRage.release.xcconfig"; path = "Pods/Target Support Files/Pods-KaeptnRage/Pods-KaeptnRage.release.xcconfig"; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 			children = (
 				954D73501DB614E400F6EC6C /* AppDelegate.swift */,
 				954D73521DB614E400F6EC6C /* ViewController.swift */,
+				95FB2E7B1DBE977B00E43F68 /* Helpers.swift */,
 				954D73621DB616A400F6EC6C /* FileCell.swift */,
 				954D73641DB61AD600F6EC6C /* Snippet.swift */,
 				954D73661DB6215D00F6EC6C /* Updater.swift */,
@@ -222,6 +225,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				954D73631DB616A400F6EC6C /* FileCell.swift in Sources */,
+				95FB2E7C1DBE977B00E43F68 /* Helpers.swift in Sources */,
 				954D73531DB614E400F6EC6C /* ViewController.swift in Sources */,
 				954D73511DB614E400F6EC6C /* AppDelegate.swift in Sources */,
 				954D73651DB61AD600F6EC6C /* Snippet.swift in Sources */,
