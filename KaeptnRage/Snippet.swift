@@ -59,7 +59,7 @@ class Snippet: NSObject, NSCoding {
 			fileName = name
 			lastChange = change
 			super.init()
-			;{ soundData = coder.decodeObject(forKey: "soundData") as? Data }() // to call didSet
+			({ soundData = coder.decodeObject(forKey: "soundData") as? Data }()) // to call didSet – thank trailing closure syntax for the brackets
 		} else {
 			return nil
 		}
@@ -74,7 +74,7 @@ class Snippet: NSObject, NSCoding {
 
 extension Snippet { // Equatable
 	
-	static func ==(lhs: Snippet, rhs: Snippet) -> Bool {
+	static func == (lhs: Snippet, rhs: Snippet) -> Bool {
 		return lhs.name == rhs.name && lhs.lastChange == rhs.lastChange
 	}
 }
