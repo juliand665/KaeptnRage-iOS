@@ -1,5 +1,7 @@
 ---
 engines:
+  tailor:
+    enabled: true
   duplication:
     enabled: true
     config:
@@ -11,5 +13,6 @@ engines:
   fixme:
     enabled: true
 ratings:
-  paths: []
+  paths:
+  - "**.swift"
 exclude_paths: []
