@@ -1,5 +1,13 @@
 ---
 engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        ruby:
+        javascript:
+        php:
+        python:
   fixme:
     enabled: true
 ratings:
