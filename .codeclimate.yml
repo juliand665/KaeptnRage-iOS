@@ -2,6 +2,11 @@
 engines:
   tailor:
     enabled: true
+    checks:
+      trailing-whitespace:
+        enabled: false
+      redundant-optional-binding:
+        enabled: false
   duplication:
     enabled: true
     config:
