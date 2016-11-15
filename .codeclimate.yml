@@ -7,6 +7,8 @@ engines:
         enabled: false
       redundant-optional-binding:
         enabled: false
+      function-whitespace:
+        enabled: false
   duplication:
     enabled: true
     config:
